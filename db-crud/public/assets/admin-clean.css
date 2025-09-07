@@ -733,42 +733,15 @@ body {
     margin: 0;
 }
 
-.notification-header-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.mark-all-read,
-.mark-all-unread,
-.clear-all-notifications {
-    color: var(--text-muted);
+.mark-all-read {
+    color: var(--primary-color);
     text-decoration: none;
-    font-size: 14px;
-    padding: 6px 8px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .mark-all-read:hover {
-    color: var(--primary-color);
-    background-color: rgba(99, 102, 241, 0.1);
-    text-decoration: none;
-}
-
-.mark-all-unread:hover {
-    color: var(--warning-color);
-    background-color: rgba(245, 158, 11, 0.1);
-    text-decoration: none;
-}
-
-.clear-all-notifications:hover {
-    color: var(--danger-color);
-    background-color: rgba(239, 68, 68, 0.1);
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 .notification-list {
@@ -781,7 +754,6 @@ body {
     border-bottom: 1px solid var(--border-color);
     transition: all 0.2s ease;
     cursor: pointer;
-    position: relative;
 }
 
 .notification-item:hover {
@@ -793,11 +765,6 @@ body {
     border-left: 3px solid var(--primary-color);
 }
 
-.notification-item.read {
-    background-color: rgba(107, 114, 128, 0.05);
-    opacity: 0.8;
-}
-
 .notification-item:last-child {
     border-bottom: none;
 }
@@ -805,42 +772,6 @@ body {
 .notification-content {
     display: flex;
     gap: 12px;
-    align-items: flex-start;
-}
-
-.notification-actions {
-    margin-left: auto;
-    display: flex;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.notification-item:hover .notification-actions {
-    opacity: 1;
-}
-
-.btn-notification-action {
-    background: none;
-    border: none;
-    padding: 6px 8px;
-    border-radius: 4px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 12px;
-}
-
-.btn-notification-action:hover {
-    background-color: var(--light-color);
-}
-
-.btn-notification-action.toggle-read:hover {
-    color: var(--primary-color);
-}
-
-.btn-notification-action.delete-notification:hover {
-    color: var(--danger-color);
 }
 
 .notification-icon {
@@ -1031,91 +962,4 @@ body {
     .stat-card {
         margin-bottom: 16px;
     }
-}
-
-/* Notification Toast */
-.notification-toast {
-    position: fixed;
-    top: 90px;
-    right: 20px;
-    background: var(--dark-color);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    z-index: 9999;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: var(--shadow-lg);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    max-width: 300px;
-    word-wrap: break-word;
-}
-
-.notification-toast.show {
-    transform: translateX(0);
-}
-
-/* Enhanced notification styles */
-.notification-item.unread .notification-message {
-    font-weight: 600;
-}
-
-.notification-item.read .notification-message {
-    font-weight: 400;
-}
-
-.notification-item.unread::before {
-    content: "";
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    background: var(--primary-color);
-    border-radius: 50%;
-}
-
-/* Notification count animation */
-.badge {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Hover effects for notification actions */
-.notification-actions .btn-notification-action {
-    position: relative;
-    overflow: hidden;
-}
-
-.notification-actions .btn-notification-action::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    transition: left 0.5s;
-}
-
-.notification-actions .btn-notification-action:hover::before {
-    left: 100%;
 }

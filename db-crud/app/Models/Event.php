@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    protected $table = 'event1';//table name
-    //colomns
-    protected $fillable=[
-        'id','name','description','priority','event_date'
+    use HasFactory;
+    
+    // Specify the correct table name from your SQL file
+    protected $table = 'event1';
+    
+    protected $fillable = [
+        'name',
+        'description', 
+        'priority',
+        'event_date'
     ];
-
-    public $timestamps=true;//created_at and updated_at colomns
+    
+    public $timestamps = true;
 }
