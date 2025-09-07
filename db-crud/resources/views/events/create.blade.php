@@ -30,6 +30,7 @@
                             <input type="date" class="form-control" name="event_date" id="eventDate">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location='{{ url('events') }}'">Cancel</button>
                     </form>
                 </div>
             </div>

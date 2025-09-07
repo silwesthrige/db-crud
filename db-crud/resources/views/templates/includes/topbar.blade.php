@@ -40,15 +40,37 @@
                     </div>
                 </div>
                 <div class="admin-profile dropdown">
-                    <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=667eea&color=fff" alt="Admin" class="profile-img">
-                        <span class="profile-name">Admin</span>
+                    <button class="btn-profile dropdown-toggle" type="button" id="profileDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=667eea&color=fff&size=36" alt="Admin" class="profile-img" id="profileImg">
+                        <div class="profile-info">
+                            <span class="profile-name" id="profileName">Admin User</span>
+                            <span class="profile-role" id="profileRole">Administrator</span>
+                        </div>
+                        <i class="fas fa-chevron-down profile-arrow"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end profile-dropdown-menu" aria-labelledby="profileDropdownBtn">
+                        <li class="dropdown-header">
+                            <div class="user-info-header">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=667eea&color=fff&size=48" alt="Admin" class="header-avatar">
+                                <div class="header-info">
+                                    <strong>Admin User</strong>
+                                    <small class="text-muted">admin@example.com</small>
+                                    <span class="badge badge-success">Online</span>
+                                </div>
+                            </div>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        <li><a class="dropdown-item" href="#" id="viewProfile"><i class="fas fa-user me-2"></i>View Profile</a></li>
+                        <li><a class="dropdown-item" href="#" id="editProfile"><i class="fas fa-edit me-2"></i>Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="#" id="changePassword"><i class="fas fa-key me-2"></i>Change Password</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="adminSettings"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><a class="dropdown-item" href="#" id="systemInfo"><i class="fas fa-info-circle me-2"></i>System Info</a></li>
+                        <li><a class="dropdown-item" href="#" id="activityLog"><i class="fas fa-history me-2"></i>Activity Log</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="helpSupport"><i class="fas fa-question-circle me-2"></i>Help & Support</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                     </ul>
                 </div>
             </div>

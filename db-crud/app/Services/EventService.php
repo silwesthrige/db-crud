@@ -17,8 +17,13 @@ class EventService
     }
     //method to insert a record
     public function store(array $data){
-        $event=new Event($data);
-        return $event->save();//boolean value is returned
+        try {
+            $event = new Event($data);
+            return $event->save(); // boolean value is returned
+        } catch (\Exception $e) {
+            \Log::error('Failed to create event: ' . $e->getMessage());
+            return false;
+        }
     }
     //method to update a record based on id
     // public function update($id,array $data){
@@ -30,24 +35,37 @@ class EventService
     //     return $event->save();
     // }
     public function update($id, array $data)
-{
-    $event = Event::find($id);
-    if (!$event) {
-        return false; // Event not found
-    }
+    {
+        try {
+            $event = Event::find($id);
+            if (!$event) {
+                return false; // Event not found
+            }
 
-    $event->name = $data['name'];
-    $event->description = $data['description'];
-    $event->priority = $data['priority'];
-    $event->event_date = $data['event_date'];
-    
-    return $event->save();
-}
+            $event->name = $data['name'];
+            $event->description = $data['description'];
+            $event->priority = $data['priority'];
+            $event->event_date = $data['event_date'];
+            
+            return $event->save();
+        } catch (\Exception $e) {
+            \Log::error('Failed to update event: ' . $e->getMessage());
+            return false;
+        }
+    }
 
 
     public function delete($id){
-        $event=Event::find($id);
-        $event->delete();
-        return true;
+        try {
+            $event = Event::find($id);
+            if (!$event) {
+                return false;
+            }
+            $event->delete();
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete event: ' . $e->getMessage());
+            return false;
+        }
     }
 }

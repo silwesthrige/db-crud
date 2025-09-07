@@ -87,7 +87,7 @@
             <div class="content-card">
                 <div class="card-header">
                     <h4><i class="fas fa-chart-line me-2"></i>Recent Events</h4>
-                    <a href="{{ url('events') }}" class="btn btn-outline-primary btn-sm">View All</a>
+                    <a href="{{ url('events') }}" class="btn btn-outline-primary btn-m">View All</a>
                 </div>
                 <div class="card-body">
                     @if(\App\Models\Event::count() > 0)

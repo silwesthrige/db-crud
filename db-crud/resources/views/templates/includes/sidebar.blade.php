@@ -21,12 +21,12 @@
                     <span class="nav-badge">{{ \App\Models\Event::count() }}</span>
                 </a>
             </li>
-            <li class="nav-item">
+           <!-- <li class="nav-item">
                 <a href="{{ url('events/create') }}" class="nav-link {{ request()->is('events/create') ? 'active' : '' }}">
                     <i class="fas fa-plus-circle"></i>
                     <span class="nav-text">Add Event</span>
                 </a>
-            </li>
+            </li> -->
         </ul>
         
         <div class="sidebar-footer">
