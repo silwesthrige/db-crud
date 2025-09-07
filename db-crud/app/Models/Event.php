@@ -14,6 +14,7 @@ class Event extends Model
     protected $table = 'event1';
     
     protected $fillable = [
+        'user_id',
         'name',
         'description', 
         'priority',
@@ -23,4 +24,12 @@ class Event extends Model
     protected $dates = ['deleted_at'];
     
     public $timestamps = true;
+    
+    /**
+     * Get the user that owns the event.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

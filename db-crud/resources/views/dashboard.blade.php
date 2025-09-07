@@ -9,7 +9,7 @@
     <!-- Dashboard Header -->
     <div class="dashboard-header">
         <div class="page-title">
-            <h2><i class="fas fa-tachometer-alt me-3"></i>Dashboard Overview</h2>
+            <h2>Dashboard Overview</h2>
             <p class="page-description">Welcome back! Here's what's happening with your events.</p>
         </div>
         <div class="header-actions">
