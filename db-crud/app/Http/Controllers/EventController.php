@@ -26,11 +26,29 @@ class EventController extends Controller
     }
     
     public function store(Request $request){
+        // Enhanced validation rules
+        $validatedData = $request->validate([
+            'name' => 'required|string|min:3|max:100',
+            'description' => 'nullable|string|max:500',
+            'priority' => 'required|in:High,Medium,Low',
+            'event_date' => 'required|date|after_or_equal:today',
+        ], [
+            'name.required' => 'Event name is required',
+            'name.min' => 'Event name must be at least 3 characters',
+            'name.max' => 'Event name cannot exceed 100 characters',
+            'description.max' => 'Description cannot exceed 500 characters',
+            'priority.required' => 'Priority level is required',
+            'priority.in' => 'Priority must be High, Medium, or Low',
+            'event_date.required' => 'Event date is required',
+            'event_date.date' => 'Please enter a valid date',
+            'event_date.after_or_equal' => 'Event date must be today or in the future',
+        ]);
+
         $data=[
-            'name'=>$request->name,
-            'description'=>$request->description,
-            'priority'=>$request->priority,
-            'event_date'=>$request->event_date,
+            'name'=>$validatedData['name'],
+            'description'=>$validatedData['description'],
+            'priority'=>$validatedData['priority'],
+            'event_date'=>$validatedData['event_date'],
         ];
         $result=$this->Service->store($data);
         
@@ -88,11 +106,33 @@ class EventController extends Controller
     }
 
     public function update(Request $request){
+        // Enhanced validation rules for update
+        $validatedData = $request->validate([
+            'id' => 'required|integer|exists:event1,id',
+            'name' => 'required|string|min:3|max:100',
+            'description' => 'nullable|string|max:500',
+            'priority' => 'required|in:High,Medium,Low',
+            'event_date' => 'required|date|after_or_equal:today',
+        ], [
+            'id.required' => 'Event ID is required',
+            'id.exists' => 'Event not found',
+            'name.required' => 'Event name is required',
+            'name.min' => 'Event name must be at least 3 characters',
+            'name.max' => 'Event name cannot exceed 100 characters',
+            'description.max' => 'Description cannot exceed 500 characters',
+            'priority.required' => 'Priority level is required',
+            'priority.in' => 'Priority must be High, Medium, or Low',
+            'event_date.required' => 'Event date is required',
+            'event_date.date' => 'Please enter a valid date',
+            'event_date.after_or_equal' => 'Event date must be today or in the future',
+        ]);
+
+        $id = $validatedData['id'];
         $data=[
-            'name'=>$request->name,
-            'description'=>$request->description,
-            'priority'=>$request->priority,
-            'event_date'=>$request->event_date,
+            'name'=>$validatedData['name'],
+            'description'=>$validatedData['description'],
+            'priority'=>$validatedData['priority'],
+            'event_date'=>$validatedData['event_date'],
         ];
         $id=$request->id;
         $result = $this->Service->update($id,$data);
@@ -109,6 +149,203 @@ class EventController extends Controller
             return redirect(url('/events'))->with('success', 'Event updated successfully!');
         }else{
             return redirect(url('/events/update/' . $id))->with('error', 'Failed to update event!');
+        }
+    }
+
+    /**
+     * Export events to CSV
+     */
+    public function export() {
+        try {
+            $events = $this->Service->getAll();
+            $filename = 'events_export_' . date('Y-m-d_H-i-s') . '.csv';
+            
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
+            ];
+            
+            $callback = function() use ($events) {
+                $file = fopen('php://output', 'w');
+                
+                // Add UTF-8 BOM for Excel compatibility
+                fwrite($file, "\xEF\xBB\xBF");
+                
+                // CSV Headers
+                fputcsv($file, [
+                    'ID',
+                    'Event Name',
+                    'Description', 
+                    'Priority',
+                    'Event Date',
+                    'Created At',
+                    'Updated At'
+                ]);
+                
+                // CSV Data
+                foreach ($events as $event) {
+                    fputcsv($file, [
+                        $event->id,
+                        $event->name,
+                        $event->description,
+                        $event->priority,
+                        $event->event_date,
+                        $event->created_at ? $event->created_at->format('Y-m-d H:i:s') : '',
+                        $event->updated_at ? $event->updated_at->format('Y-m-d H:i:s') : ''
+                    ]);
+                }
+                
+                fclose($file);
+            };
+            
+            // Create notification for export
+            NotificationService::createSystemNotification(
+                'success',
+                'Data Export',
+                'Events data exported successfully (' . count($events) . ' records)',
+                [
+                    'export_type' => 'csv',
+                    'record_count' => count($events),
+                    'filename' => $filename
+                ]
+            );
+            
+            return response()->stream($callback, 200, $headers);
+            
+        } catch (\Exception $e) {
+            \Log::error('Export failed: ' . $e->getMessage());
+            
+            // Create notification for export failure
+            NotificationService::createSystemNotification(
+                'danger',
+                'Export Failed',
+                'Failed to export events data: ' . $e->getMessage(),
+                ['error' => $e->getMessage()]
+            );
+            
+            return redirect('/events')->with('error', 'Export failed. Please try again.');
+        }
+    }
+
+    /**
+     * Show import form
+     */
+    public function showImport() {
+        return view('events.import');
+    }
+
+    /**
+     * Import events from CSV
+     */
+    public function import(Request $request) {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:10240', // Max 10MB
+        ]);
+
+        try {
+            $file = $request->file('csv_file');
+            $filename = $file->getClientOriginalName();
+            $path = $file->getRealPath();
+            
+            $csvData = array_map('str_getcsv', file($path));
+            
+            // Remove header row
+            $headers = array_shift($csvData);
+            
+            $importedCount = 0;
+            $errors = [];
+            
+            foreach ($csvData as $index => $row) {
+                try {
+                    // Skip empty rows
+                    if (empty(array_filter($row))) continue;
+                    
+                    // Map CSV columns (assuming standard format)
+                    $eventData = [
+                        'name' => $row[1] ?? 'Imported Event',
+                        'description' => $row[2] ?? '',
+                        'priority' => in_array($row[3] ?? '', ['High', 'Medium', 'Low']) ? $row[3] : 'Medium',
+                        'event_date' => $this->parseDate($row[4] ?? date('Y-m-d'))
+                    ];
+                    
+                    if ($this->Service->store($eventData)) {
+                        $importedCount++;
+                    }
+                } catch (\Exception $e) {
+                    $errors[] = "Row " . ($index + 2) . ": " . $e->getMessage();
+                }
+            }
+            
+            // Create notification for import
+            $notificationType = empty($errors) ? 'success' : 'warning';
+            $message = "Imported {$importedCount} events successfully";
+            if (!empty($errors)) {
+                $message .= " with " . count($errors) . " errors";
+            }
+            
+            NotificationService::createSystemNotification(
+                $notificationType,
+                'Data Import',
+                $message,
+                [
+                    'import_type' => 'csv',
+                    'filename' => $filename,
+                    'imported_count' => $importedCount,
+                    'error_count' => count($errors),
+                    'errors' => array_slice($errors, 0, 10) // Limit errors in notification
+                ]
+            );
+            
+            $redirectMessage = "Successfully imported {$importedCount} events.";
+            if (!empty($errors)) {
+                $redirectMessage .= " " . count($errors) . " rows had errors.";
+            }
+            
+            return redirect('/events')->with('success', $redirectMessage);
+            
+        } catch (\Exception $e) {
+            \Log::error('Import failed: ' . $e->getMessage());
+            
+            NotificationService::createSystemNotification(
+                'danger',
+                'Import Failed',
+                'Failed to import events: ' . $e->getMessage(),
+                ['error' => $e->getMessage()]
+            );
+            
+            return redirect('/events')->with('error', 'Import failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Parse date from various formats
+     */
+    private function parseDate($dateString) {
+        try {
+            // Try common date formats
+            $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y'];
+            
+            foreach ($formats as $format) {
+                $date = \DateTime::createFromFormat($format, $dateString);
+                if ($date !== false) {
+                    return $date->format('Y-m-d');
+                }
+            }
+            
+            // Fallback to strtotime
+            $timestamp = strtotime($dateString);
+            if ($timestamp !== false) {
+                return date('Y-m-d', $timestamp);
+            }
+            
+            // Default to today
+            return date('Y-m-d');
+            
+        } catch (\Exception $e) {
+            return date('Y-m-d');
         }
     }
 }

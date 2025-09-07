@@ -14,6 +14,11 @@ route::get('/events/delete/{id}',[EventController::class,'delete']);
 route::get('/events/update/{id}',[EventController::class,'edit']);
 route::post('/events/update',[EventController::class,'update']);
 
+// Export/Import Routes
+route::get('/events/export',[EventController::class,'export']);
+route::get('/events/import',[EventController::class,'showImport']);
+route::post('/events/import',[EventController::class,'import']);
+
 // Notification API Routes
 Route::prefix('api/notifications')->group(function () {
     Route::get('/', [NotificationController::class, 'index']);
