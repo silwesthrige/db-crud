@@ -22,3 +22,58 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# ------------------------------------------------------------------
+# Additional Laravel / PHP / Node build artifacts & temp files
+# ------------------------------------------------------------------
+
+# Environment variants (keep .env.example tracked)
+.env.*
+!.env.example
+
+# Laravel cache & compiled files
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+
+# Coverage & reports
+coverage/
+clover.xml
+phpunit.xml.cache
+
+# Logs & debug (already capturing *.log, extend)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node / Vite artifacts (build already listed)
+.eslintcache
+.stylelintcache
+.cache/
+
+# OS / Editor extras
+Icon?
+ehthumbs.db
+*.swp
+*.swo
+*.orig
+*.bak
+
+# Composer extras
+composer.phar
+
+# IDE specific (extended)
+/.history
+.project
+.settings
+
+# Optional local database dumps / snapshots (uncomment if not to commit)
+# lara_crud.sql
+
+# Debug / profiling tools (future-proofing)
+/.telescope
+/.debugbar
+
+# Local runtime overrides
+docker-compose.override.yml
+
