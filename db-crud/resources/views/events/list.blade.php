@@ -136,9 +136,13 @@
                                 <a href="{{ url('/events/update/'.$event->id) }}" class="btn btn-sm btn-outline-primary me-2" title="Edit Event">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="{{ url('/events/delete/'.$event->id) }}" class="btn btn-sm btn-outline-danger" title="Delete Event" onclick="return confirm('Are you sure you want to delete this event?')">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                                <form method="POST" action="{{ route('events.delete', $event->id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this event?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Event">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         @endforeach
@@ -178,9 +182,13 @@
                                     <a href="{{ url('/events/update/'.$event->id) }}" class="btn btn-sm btn-outline-primary flex-fill">
                                         <i class="fas fa-edit me-1"></i>Edit
                                     </a>
-                                    <a href="{{ url('/events/delete/'.$event->id) }}" class="btn btn-sm btn-outline-danger flex-fill" onclick="return confirm('Are you sure you want to delete this event?')">
-                                        <i class="fas fa-trash me-1"></i>Delete
-                                    </a>
+                                    <form method="POST" action="{{ route('events.delete', $event->id) }}" style="display: inline; flex: 1;" onsubmit="return confirm('Are you sure you want to delete this event?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

@@ -2,7 +2,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Sidebar toggle functionality
     const sidebarToggle = document.getElementById("sidebarToggle");
-    const sidebar = document.getElementById("sidebar");
+    const sidebar =
+        document.querySelector(".admin-sidebar") ||
+        document.getElementById("sidebar");
     const sidebarOverlay = document.getElementById("sidebarOverlay");
 
     if (sidebarToggle && sidebar) {
@@ -15,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Close sidebar when clicking on overlay
-    if (sidebarOverlay) {
+    if (sidebarOverlay && sidebar) {
         sidebarOverlay.addEventListener("click", function () {
             sidebar.classList.remove("show");
             sidebarOverlay.classList.remove("show");

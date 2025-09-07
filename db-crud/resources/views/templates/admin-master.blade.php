@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('assets/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    @stack('styles')
     @yield('header_content')
 </head>
 <body>
@@ -31,11 +32,20 @@
                     @endif
                     @yield('content')
                 </div>
+                
+                <!-- Simple Footer -->
+                <footer class="simple-footer">
+                    <div class="simple-footer-content">
+                        <span>&copy; {{ date('Y') }} Event Manager. All rights reserved.</span>
+                    </div>
+                </footer>
             </main>
         </div>
     </div>
     <script src="{{ asset('assets/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/admin.js') }}"></script>
+    <script src="{{ asset('assets/theme.js') }}"></script>
+    @stack('scripts')
     @yield('optional_scripts')
 </body>
 </html>

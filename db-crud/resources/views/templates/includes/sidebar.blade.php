@@ -15,10 +15,16 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('events') }}" class="nav-link {{ request()->is('events*') ? 'active' : '' }}">
+                <a href="{{ url('events') }}" class="nav-link {{ request()->is('events') && !request()->is('events/calendar') ? 'active' : '' }}">
                     <i class="fas fa-calendar-alt"></i>
                     <span class="nav-text">Events</span>
                     <span class="nav-badge">{{ \App\Models\Event::count() }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('events.calendar') }}" class="nav-link {{ request()->is('events/calendar') ? 'active' : '' }}">
+                    <i class="fas fa-calendar"></i>
+                    <span class="nav-text">Calendar</span>
                 </a>
             </li>
            <!-- <li class="nav-item">

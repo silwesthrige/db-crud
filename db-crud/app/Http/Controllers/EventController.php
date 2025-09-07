@@ -21,6 +21,68 @@ class EventController extends Controller
         return view('events.list',compact('events'));
     }
 
+    public function calendar(){
+        return view('events.calendar');
+    }
+
+    public function calendarData(){
+        $events = $this->Service->getAll();
+        
+        $calendarEvents = $events->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->name,
+                'start' => $event->event_date,
+                'backgroundColor' => $this->getPriorityColor($event->priority),
+                'borderColor' => $this->getPriorityColor($event->priority),
+                'extendedProps' => [
+                    'description' => $event->description,
+                    'priority' => $event->priority,
+                ]
+            ];
+        });
+
+        return response()->json($calendarEvents);
+    }
+
+    private function getPriorityColor($priority){
+        return match($priority) {
+            'High' => '#ef4444',
+            'Medium' => '#f59e0b', 
+            'Low' => '#10b981',
+            default => '#6366f1'
+        };
+    }
+
+    public function timelineData(){
+        // Get last 7 days
+        $dates = collect();
+        $highPriority = [];
+        $mediumPriority = [];
+        $lowPriority = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $dates->push($date->format('M d'));
+            
+            // Get actual event counts for each priority level for this date
+            $highCount = $this->Service->getEventsByDateAndPriority($date, 'High');
+            $mediumCount = $this->Service->getEventsByDateAndPriority($date, 'Medium');
+            $lowCount = $this->Service->getEventsByDateAndPriority($date, 'Low');
+            
+            $highPriority[] = $highCount;
+            $mediumPriority[] = $mediumCount;
+            $lowPriority[] = $lowCount;
+        }
+
+        return response()->json([
+            'labels' => $dates->toArray(),
+            'high' => $highPriority,
+            'medium' => $mediumPriority,
+            'low' => $lowPriority
+        ]);
+    }
+
     public function create(){
         return view('events.create');
     }
@@ -347,5 +409,38 @@ class EventController extends Controller
         } catch (\Exception $e) {
             return date('Y-m-d');
         }
+    }
+    
+    // API method for monthly trend chart data
+    public function monthlyTrendData() {
+        $monthlyData = $this->Service->getMonthlyEventCounts(6);
+        
+        $labels = [];
+        $data = [];
+        
+        foreach ($monthlyData as $month) {
+            $labels[] = $month['month'];
+            $data[] = $month['count'];
+        }
+        
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data
+        ]);
+    }
+    
+    // API method for activity chart data
+    public function activityData() {
+        $activityData = $this->Service->getActivityCounts();
+        
+        return response()->json([
+            'labels' => ['Created', 'Updated', 'Completed', 'Deleted'],
+            'data' => [
+                $activityData['created'],
+                $activityData['updated'],
+                $activityData['completed'],
+                $activityData['deleted']
+            ]
+        ]);
     }
 }

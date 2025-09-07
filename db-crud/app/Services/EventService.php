@@ -68,4 +68,41 @@ class EventService
             return false;
         }
     }
+    
+    //method to get events by date and priority for charts
+    public function getEventsByDateAndPriority($date, $priority) {
+        return Event::whereDate('event_date', $date->format('Y-m-d'))
+                   ->where('priority', $priority)
+                   ->count();
+    }
+    
+    //method to get monthly event counts for chart
+    public function getMonthlyEventCounts($months = 6) {
+        $data = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $count = Event::whereYear('event_date', $date->year)
+                         ->whereMonth('event_date', $date->month)
+                         ->count();
+            $data[] = [
+                'month' => $date->format('M'),
+                'count' => $count
+            ];
+        }
+        return $data;
+    }
+    
+    //method to get activity counts for chart
+    public function getActivityCounts() {
+        $now = now();
+        
+        return [
+            'created' => Event::whereDate('created_at', $now->toDateString())->count(),
+            'updated' => Event::whereDate('updated_at', $now->toDateString())
+                            ->where('created_at', '!=', Event::raw('updated_at'))
+                            ->count(),
+            'completed' => Event::where('priority', 'Low')->count(), // Assuming Low priority means completed
+            'deleted' => Event::onlyTrashed()->whereDate('deleted_at', $now->toDateString())->count() // Count soft deleted events for today
+        ];
+    }
 }

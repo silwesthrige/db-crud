@@ -11,6 +11,11 @@
         </div>
         <div class="topbar-right">
             <div class="admin-actions">
+                <!-- Dark Mode Toggle -->
+                <button class="btn-icon" id="themeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                
                 <div class="notification-dropdown">
                     <button class="btn-icon" id="notificationBtn" title="Notifications">
                         <i class="fas fa-bell"></i>
@@ -34,9 +39,9 @@
                         <div class="notification-list" id="notificationList">
                             <!-- Notifications will be loaded here -->
                         </div>
-                      <!--  <div class="notification-footer">
+                        <div class="notification-footer">
                             <a href="#" class="view-all-notifications">View all notifications</a>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
                 <div class="admin-profile dropdown">
